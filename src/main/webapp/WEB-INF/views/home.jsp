@@ -55,7 +55,7 @@
 			const format = new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",minimumFrationDigits:2}).format;
 		
 			for(let perf of invoices.perfomances){
-				const play = playFor(perf); // <-- 우변을 함수로 추출
+				//const play = playFor(perf); // <-- 우변을 함수로 추출(인라인으로 된 변수 제거)
 				
 				/* switch (play.type){ 			// <- 이부분의 한번의 공연에 대한 요금을 계산하고 있다. 이러한 사실은 코드를 본석해서 얻은 정보다
 				case "tragedy" :				// 이런식으로 파악한 정보는 휘발성이 높기로 악명높은 저장장치인 내머릿속에 기억되므로 잊지않으려면 재빨리
@@ -76,15 +76,15 @@
 					throw new Error('알수 없는 장르 :'+play.type);
 				} */
 				
-				thisAmount = amountFor(perf, play); // <- 리팩토링한 함수 리턴값으로 thisAmount가 저장된다.
+				let thisAmount = amountFor(perf, playFor(perf)); // <- 리팩토링한 함수 리턴값으로 thisAmount가 저장된다.
 			
 			// 포인트를 적입한다.
 			volumeCredits += Math.max(perf.audience - 30, 0);
 			
 			// 희극 관객 5 명마다 추가포인트를 제공한다.
-			if("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5);
+			if("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
 			// 청구 내역을 출력한다.
-			result += " "+play.name + " : " + format( thisAmount / 100 ) + "(" + perf.audience + "석)\n";
+			result += " "+playFor(perf).name + " : " + format( thisAmount / 100 ) + "(" + perf.audience + "석)\n";
 			totalAmount += thisAmount;
 			}
 			result += "총액 : " + format(totalAmount/100);
@@ -105,8 +105,7 @@
 		
 		function amountFor(aPerformance, play){ // 값이 바뀌지 않는 변수는 매개변수로 전달 //perf를 -> aPerformance로 명확한이름변경
 			let result = 0; // 변수를 초기화 하는 코드
-			
-			switch (play.type){ 			
+			switch (playFor(aPerformance).type){ // <- play를 playFor(호출로 변경)	
 			case "tragedy" :				
 					result = 40000;    
 					if( aPerformance.audience > 30){
@@ -115,14 +114,14 @@
 					break;
 			case "comedy" :
 					result = 30000;
-					if(aPerformance.audience > 20){
+					if( aPerformance.audience > 20 ){
 						result += 10000 + 500 * (aPerformance.audience - 20);
 					}
 					result += 300 * aPerformance.audience;					   
 					break;
 			
 			default:
-				throw new Error('알수 없는 장르 :'+play.type);
+				throw new Error('알수 없는 장르 :' + playFor(aPerformance));
 			}
 			
 			return result; // <- 함수 안에서 값이 바뀌는 변수 반환.
