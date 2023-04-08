@@ -48,13 +48,17 @@
 		statement(invoices, plays);
 		
 		function statement(invoices, plays) {
-			let result =  renderPlainText(invoices ,plays);
+			const statmentDate         = {};
+			statementData.customer     = invoices.customer;
+			statementData.performances = invoice.performances;
+			
+			let result =  renderPlainText(statmentDate ,plays);
 			console.log(result);
 		}
 		
-		function renderPlainText(invoices, plays) {
-			let result = "청구 내역(고객명 : "+invoices.customer+")";
-			for(let perf of invoices.perfomances){
+		function renderPlainText(data, plays) {
+			let result = "청구 내역(고객명 : "+data.customer+")";
+			for(let perf of data.perfomances){
 			
 				// 청구 내역을 출력한다.
 				result += " "+playFor(perf).name + " : " + usd(amountFor(perf)) + "(" + perf.audience + "석)\n";
