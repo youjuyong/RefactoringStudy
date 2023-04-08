@@ -48,18 +48,16 @@
 		}
 		
 		function statement(invoices, plays) {
-			let totalAmount = 0;
-			
 			let result = "청구 내역(고객명 : "+invoices.customer+")";
 			for(let perf of invoices.perfomances){
 			
 				// 청구 내역을 출력한다.
 				result += " "+playFor(perf).name + " : " + usd(amountFor(perf)) + "(" + perf.audience + "석)\n";
-				totalAmount += amountFor(perf); // thisAmount 인라인 제거
 			}
-			let volumeCredits = totalVolumeCredits(); // 값계산 로직을 함수로 추출
-			result += "총액 : " + usd(totalAmount/100);
-			result += "적립 포인트 : " + volumeCredits + "점\n";
+			
+			let totalAmount = appleSauce(); //totalAmount 함수 생성 반복문 복사
+			result += "총액 : " + usd(totalAmount);
+			result += "적립 포인트 : " + totalVolumeCredits() + "점\n";
 			console.log(result);
 		}
 		
@@ -73,6 +71,15 @@
 		// 1. 리팩토링의 첫 단계는 항상 같다. 리팩터링 할 코드 영역을 꼼꼼하게 검사해줄 테스트 코드를 마련해야한다.
 		// 2. statment 함수와 같은 함수를 리팩터링할때 먼저 전체 동작을 각각의 부분으로 나눌수 있는 지점을 찾는다. 그러면 중간의 switch 문이 가장눈에띌것이다.
 		// 
+		
+		function appleSauce() {
+			let totalAmount = 0;
+			
+			for(let perf of invoices.perfomances){
+				totalAmount += amountFor(perf);
+			}
+			return totalAmount;
+		}
 		
 		// 토탈 값 함수
 		function totalVolumeCredits() {
