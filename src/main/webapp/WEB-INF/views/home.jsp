@@ -51,23 +51,57 @@
 			const statmentDate         = {};
 			statmentDate.customer    = invoices.customer;
 			statmentDate.perfomances = invoices.perfomances.map(enrichPerformance);
-			console.log(statmentDate);
+			
 			let result =  renderPlainText(statmentDate ,plays);
 			console.log(result);
+			
+			function enrichPerformance(aPerformance) {
+				
+				const result = Object.assign({}, aPerformance);
+			
+				result.play = playFor(result); // 중간 데이터에 연극 정보를 저장
+				result.amount = amountFor(result); // 중간 데이터에 amountFor 저장
+				console.log(result);
+				return result;
+			}
+			
+			function playFor(aPerformance){ // renderPlainText() 의 중첩함수 였던 playFor()를 statment로 옮김
+				return plays[aPerformance.playID];
+			}
+			
+			function amountFor(aPerformance){ // 값이 바뀌지 않는 변수는 매개변수로 전달 //perf를 -> aPerformance로 명확한이름변경
+				let result = 0; // 변수를 초기화 하는 코드
+				switch (aPerformance.play.type){ // <- play를 playFor(호출로 변경)	
+				case "tragedy" :				
+						result = 40000;    
+						if( aPerformance.audience > 30){
+							result += 1000 * (aPerformance.audience - 30);
+						}
+						break;
+				case "comedy" :
+						result = 30000;
+						if( aPerformance.audience > 20 ){
+							result += 10000 + 500 * (aPerformance.audience - 20);
+						}
+						result += 300 * aPerformance.audience;					   
+						break;
+				
+				default:
+					throw new Error('알수 없는 장르 :' + aPerformance.play.type);
+				}
+				return result; // <- 함수 안에서 값이 바뀌는 변수 반환.
+			}
 		}
 		
-		function enrichPerformance(aPerformance) {
-			console.log(aPerformance);
-			const result = Object.assign({}, aPerformance);
-			return result;
-		}
+		
 		
 		function renderPlainText(data, plays) {
 			let result = "청구 내역(고객명 : "+data.customer+")";
+			console.log(data);
 			for(let perf of data.perfomances){
-			
+				
 				// 청구 내역을 출력한다.
-				result += " "+playFor(perf).name + " : " + usd(amountFor(perf)) + "(" + perf.audience + "석)\n";
+				result += " "+perf.play.name + " : " + usd(perf.amount) + "(" + perf.audience + "석)\n";
 			}
 			
 			result += "총액 : " + usd(totalAmount());
@@ -78,7 +112,7 @@
 				let result = 0;
 				
 				for(let perf of data.perfomances){
-					result += amountFor(perf);
+					result += perf.amount;
 				}
 				return result;
 			}
@@ -98,40 +132,15 @@
 						,minimumFrationDigits:2}).format(aNumber/100);
 			}
 			
-			function volumeCreditsFor(perf) {
+			function volumeCreditsFor(aPerformance) {
 				let result = 0;
 				result += Math.max(perf.audience - 30, 0);
-				if("comedy" === playFor(perf).type) 
+				if("comedy" === aPerformance.play.type) 
 					result += Math.floor(perf.audience / 5);
 				return result;
 			}
 			
-			function amountFor(aPerformance){ // 값이 바뀌지 않는 변수는 매개변수로 전달 //perf를 -> aPerformance로 명확한이름변경
-				let result = 0; // 변수를 초기화 하는 코드
-				switch (playFor(aPerformance).type){ // <- play를 playFor(호출로 변경)	
-				case "tragedy" :				
-						result = 40000;    
-						if( aPerformance.audience > 30){
-							result += 1000 * (aPerformance.audience - 30);
-						}
-						break;
-				case "comedy" :
-						result = 30000;
-						if( aPerformance.audience > 20 ){
-							result += 10000 + 500 * (aPerformance.audience - 20);
-						}
-						result += 300 * aPerformance.audience;					   
-						break;
-				
-				default:
-					throw new Error('알수 없는 장르 :' + playFor(aPerformance));
-				}
-				return result; // <- 함수 안에서 값이 바뀌는 변수 반환.
-			}
 			
-			function playFor(aPerformance){
-				return plays[aPerformance.playID];
-			}
 		}
 		
 		
