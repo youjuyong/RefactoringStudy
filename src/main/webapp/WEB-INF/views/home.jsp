@@ -55,7 +55,7 @@
 			const format = new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",minimumFrationDigits:2}).format;
 		
 			for(let perf of invoices.perfomances){
-				const play = plays[perf.playID];
+				const play = playFor(perf); // <-- 우변을 함수로 추출
 				
 				/* switch (play.type){ 			// <- 이부분의 한번의 공연에 대한 요금을 계산하고 있다. 이러한 사실은 코드를 본석해서 얻은 정보다
 				case "tragedy" :				// 이런식으로 파악한 정보는 휘발성이 높기로 악명높은 저장장치인 내머릿속에 기억되므로 잊지않으려면 재빨리
@@ -103,22 +103,22 @@
 		// 2. statment 함수와 같은 함수를 리팩터링할때 먼저 전체 동작을 각각의 부분으로 나눌수 있는 지점을 찾는다. 그러면 중간의 switch 문이 가장눈에띌것이다.
 		// 
 		
-		function amountFor(perf, play){ // 값이 바뀌지 않는 변수는 매개변수로 전달
+		function amountFor(aPerformance, play){ // 값이 바뀌지 않는 변수는 매개변수로 전달 //perf를 -> aPerformance로 명확한이름변경
 			let result = 0; // 변수를 초기화 하는 코드
 			
 			switch (play.type){ 			
 			case "tragedy" :				
 					result = 40000;    
-					if( perf.audience > 30){
-						result += 1000 * (perf.audience - 30);
+					if( aPerformance.audience > 30){
+						result += 1000 * (aPerformance.audience - 30);
 					}
 					break;
 			case "comedy" :
 					result = 30000;
-					if(perf.audience > 20){
-						result += 10000 + 500 * (perf.audience - 20);
+					if(aPerformance.audience > 20){
+						result += 10000 + 500 * (aPerformance.audience - 20);
 					}
-					result += 300 * perf.audience;					   
+					result += 300 * aPerformance.audience;					   
 					break;
 			
 			default:
@@ -126,20 +126,19 @@
 			}
 			
 			return result; // <- 함수 안에서 값이 바뀌는 변수 반환.
-		}
-	});
+		
+	}
 	
+	function playFor(aPerformance){
+		return plays[aPerformance.playID];
+	}
 	
+});
+	
+
 </script>
 </head>
 <body>
-<form onclick="alert('form')">FROM
-		<div onclick="alert('div')">DIV
-			<p onclick="alert('p')">P</p>
-		</div>
-</form>
-
-
 
 <button id="elem" value="확인">확인</button>
 <div id="div1"></div>
@@ -166,4 +165,5 @@
 	<a href="customer/join?start=1">회원가입</a><br>
 </c:if>
 </body> --%>
+</body>
 </html>
