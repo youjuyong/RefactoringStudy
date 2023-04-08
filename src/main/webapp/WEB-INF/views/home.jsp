@@ -125,7 +125,7 @@
 				throw new Error('알수 없는 장르 :'+play.type);
 			}
 			
-			return result; // <- 함수 안에서 값이 바뀌는 변수 반환
+			return result; // <- 함수 안에서 값이 바뀌는 변수 반환.
 		}
 	});
 	
