@@ -49,11 +49,17 @@
 		
 		function statement(invoices, plays) {
 			const statmentDate         = {};
-			statementData.customer     = invoices.customer;
-			statementData.performances = invoice.performances;
-			
+			statmentDate.customer    = invoices.customer;
+			statmentDate.perfomances = invoices.perfomances.map(enrichPerformance);
+			console.log(statmentDate);
 			let result =  renderPlainText(statmentDate ,plays);
 			console.log(result);
+		}
+		
+		function enrichPerformance(aPerformance) {
+			console.log(aPerformance);
+			const result = Object.assign({}, aPerformance);
+			return result;
 		}
 		
 		function renderPlainText(data, plays) {
@@ -71,7 +77,7 @@
 			function totalAmount() {
 				let result = 0;
 				
-				for(let perf of invoices.perfomances){
+				for(let perf of data.perfomances){
 					result += amountFor(perf);
 				}
 				return result;
@@ -80,7 +86,7 @@
 			// 토탈 값 함수
 			function totalVolumeCredits() {
 				let result = 0; // 변수 선언(초기화)를 반복문 앞으로 이동
-				for(let perf of invoices.perfomances){
+				for(let perf of data.perfomances){
 					result = volumeCreditsFor(perf);
 				}
 				return result;
