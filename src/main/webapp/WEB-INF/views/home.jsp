@@ -49,43 +49,16 @@
 		
 		function statement(invoices, plays) {
 			let totalAmount = 0;
-			let volumeCredits = 0;
+			
 			let result = "청구 내역(고객명 : "+invoices.customer+")";
-			
-			const format = new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",minimumFrationDigits:2}).format;
-		
 			for(let perf of invoices.perfomances){
-				//const play = playFor(perf); // <-- 우변을 함수로 추출(인라인으로 된 변수 제거)
-				
-				/* switch (play.type){ 			// <- 이부분의 한번의 공연에 대한 요금을 계산하고 있다. 이러한 사실은 코드를 본석해서 얻은 정보다
-				case "tragedy" :				// 이런식으로 파악한 정보는 휘발성이 높기로 악명높은 저장장치인 내머릿속에 기억되므로 잊지않으려면 재빨리
-						thisAmount = 40000;     // 코드에 반영해야한다. amountFor 이라는 함수로 코드 조각을 별도 함수로 추출하는 방식으로 앞서 파악한 정보를 코드에 반영할 것이다.
-						if( perf.audience > 30){
-							thisAmount += 1000 * (perf.audience - 30);
-						}
-						break;
-				case "comedy" :
-						thisAmount = 30000;
-						if(perf.audience > 20){
-							thisAmount += 10000 + 500 * (perf.audience - 20);
-						}
-						thisAmount += 300 * perf.audience;					   
-						break;
-				
-				default:
-					throw new Error('알수 없는 장르 :'+play.type);
-				} */
-				
-				//let thisAmount = amountFor(perf); // <- 리팩토링한 함수 리턴값으로 thisAmount가 저장된다. 변수제거
 			
-			// 포인트를 적입한다.
-			volumeCredits = volumeCreditsFor(perf);
-			
-			// 청구 내역을 출력한다.
-			result += " "+playFor(perf).name + " : " + format( amountFor(perf) / 100 ) + "(" + perf.audience + "석)\n";
-			totalAmount += amountFor(perf); // thisAmount 인라인 제거
+				// 청구 내역을 출력한다.
+				result += " "+playFor(perf).name + " : " + usd(amountFor(perf)) + "(" + perf.audience + "석)\n";
+				totalAmount += amountFor(perf); // thisAmount 인라인 제거
 			}
-			result += "총액 : " + format(totalAmount/100);
+			let volumeCredits = totalVolumeCredits(); // 값계산 로직을 함수로 추출
+			result += "총액 : " + usd(totalAmount/100);
 			result += "적립 포인트 : " + volumeCredits + "점\n";
 			console.log(result);
 		}
@@ -100,6 +73,21 @@
 		// 1. 리팩토링의 첫 단계는 항상 같다. 리팩터링 할 코드 영역을 꼼꼼하게 검사해줄 테스트 코드를 마련해야한다.
 		// 2. statment 함수와 같은 함수를 리팩터링할때 먼저 전체 동작을 각각의 부분으로 나눌수 있는 지점을 찾는다. 그러면 중간의 switch 문이 가장눈에띌것이다.
 		// 
+		
+		// 토탈 값 함수
+		function totalVolumeCredits() {
+			let volumeCredits = 0; // 변수 선언(초기화)를 반복문 앞으로 이동
+			for(let perf of invoices.perfomances){
+				volumeCredits = volumeCreditsFor(perf);
+			}
+			return volumeCredits;
+		}
+		
+		function usd(aNumber) { // 포맷 함수생성 
+			return new Intl.NumberFormat("en-US",
+					{style:"currency",currency:"USD"
+					,minimumFrationDigits:2}).format(aNumber/100);
+		}
 		
 		function volumeCreditsFor(perf) {
 			let result = 0;
