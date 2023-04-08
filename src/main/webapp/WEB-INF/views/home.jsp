@@ -79,10 +79,8 @@
 				//let thisAmount = amountFor(perf); // <- 리팩토링한 함수 리턴값으로 thisAmount가 저장된다. 변수제거
 			
 			// 포인트를 적입한다.
-			volumeCredits += Math.max(perf.audience - 30, 0);
+			volumeCredits = volumeCreditsFor(perf);
 			
-			// 희극 관객 5 명마다 추가포인트를 제공한다.
-			if("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
 			// 청구 내역을 출력한다.
 			result += " "+playFor(perf).name + " : " + format( amountFor(perf) / 100 ) + "(" + perf.audience + "석)\n";
 			totalAmount += amountFor(perf); // thisAmount 인라인 제거
@@ -102,6 +100,15 @@
 		// 1. 리팩토링의 첫 단계는 항상 같다. 리팩터링 할 코드 영역을 꼼꼼하게 검사해줄 테스트 코드를 마련해야한다.
 		// 2. statment 함수와 같은 함수를 리팩터링할때 먼저 전체 동작을 각각의 부분으로 나눌수 있는 지점을 찾는다. 그러면 중간의 switch 문이 가장눈에띌것이다.
 		// 
+		
+		function volumeCreditsFor(perf) {
+			let result = 0;
+			result += Math.max(perf.audience - 30, 0);
+			if("comedy" === playFor(perf).type) 
+				result += Math.floor(perf.audience / 5);
+			return result;
+		}
+		
 		
 		function amountFor(aPerformance){ // 값이 바뀌지 않는 변수는 매개변수로 전달 //perf를 -> aPerformance로 명확한이름변경
 			let result = 0; // 변수를 초기화 하는 코드
