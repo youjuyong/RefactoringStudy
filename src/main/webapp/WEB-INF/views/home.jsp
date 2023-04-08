@@ -76,7 +76,7 @@
 					throw new Error('알수 없는 장르 :'+play.type);
 				} */
 				
-				let thisAmount = amountFor(perf, playFor(perf)); // <- 리팩토링한 함수 리턴값으로 thisAmount가 저장된다.
+				let thisAmount = amountFor(perf); // <- 리팩토링한 함수 리턴값으로 thisAmount가 저장된다.
 			
 			// 포인트를 적입한다.
 			volumeCredits += Math.max(perf.audience - 30, 0);
@@ -103,7 +103,7 @@
 		// 2. statment 함수와 같은 함수를 리팩터링할때 먼저 전체 동작을 각각의 부분으로 나눌수 있는 지점을 찾는다. 그러면 중간의 switch 문이 가장눈에띌것이다.
 		// 
 		
-		function amountFor(aPerformance, play){ // 값이 바뀌지 않는 변수는 매개변수로 전달 //perf를 -> aPerformance로 명확한이름변경
+		function amountFor(aPerformance){ // 값이 바뀌지 않는 변수는 매개변수로 전달 //perf를 -> aPerformance로 명확한이름변경
 			let result = 0; // 변수를 초기화 하는 코드
 			switch (playFor(aPerformance).type){ // <- play를 playFor(호출로 변경)	
 			case "tragedy" :				
