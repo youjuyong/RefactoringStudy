@@ -51,6 +51,29 @@
 				this.performance = aPerformance;
 				this.play = aPlay;
 			}
+			
+			get amount() { // amountFor() 함수의 코드를 계산기 클래스로 복사
+				let result = 0; // 변수를 초기화 하는 코드
+				switch (this.play.type){ // <- play를 playFor(호출로 변경)	
+				case "tragedy" :				
+						result = 40000;    
+						if( this.performance.audience > 30){
+							result += 1000 * (this.performance.audience - 30);
+						}
+						break;
+				case "comedy" :
+						result = 30000;
+						if( this.performance.audience > 20 ){
+							result += 10000 + 500 * (this.performance.audience - 20);
+						}
+						result += 300 * this.performance.audience;					   
+						break;
+				
+				default:
+					throw new Error('알수 없는 장르 :' + this.play.type);
+				}
+				return result; // <- 함수 안에서 값이 바뀌는 변수 반환.
+			}
 		}
 		
 		statement(invoices, plays);
@@ -87,26 +110,7 @@
 			
 			// 장르에 따라 적립포인트 값을 계산하는 기능
 			function amountFor(aPerformance){ // 값이 바뀌지 않는 변수는 매개변수로 전달 //perf를 -> aPerformance로 명확한이름변경
-				let result = 0; // 변수를 초기화 하는 코드
-				switch (aPerformance.play.type){ // <- play를 playFor(호출로 변경)	
-				case "tragedy" :				
-						result = 40000;    
-						if( aPerformance.audience > 30){
-							result += 1000 * (aPerformance.audience - 30);
-						}
-						break;
-				case "comedy" :
-						result = 30000;
-						if( aPerformance.audience > 20 ){
-							result += 10000 + 500 * (aPerformance.audience - 20);
-						}
-						result += 300 * aPerformance.audience;					   
-						break;
-				
-				default:
-					throw new Error('알수 없는 장르 :' + aPerformance.play.type);
-				}
-				return result; // <- 함수 안에서 값이 바뀌는 변수 반환.
+				return new PerformanceCalculator(aPerformance, playFor(aPerformance)).amount;
 			}
 			
 			// 토탈 값 함수
