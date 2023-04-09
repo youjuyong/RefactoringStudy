@@ -45,8 +45,6 @@
 					}
 				]
 		}
-		
-		
 		// 계산기 클래스
 		class PerformanceCalculator {
 			constructor(aPerformance, aPlay) {
@@ -86,6 +84,25 @@
 			}
 		}
 		
+		function createPerformanceCalculator (aPerformance, aPlay){
+			switch(aPlay.type) {
+				case "tragedy" : return new TragedyCalculator(aPerformance, aPlay); 
+				case "comedy"  : return new ComedyCalculator(aPerformance, aPlay); 
+				default :
+					throw new Error("알수 없는 장르 : " + aPlay.type);
+			}
+		}
+		
+		class TragedyCalculator extends PerformanceCalculator{
+			
+		}
+		
+		class ComedyCalculator extends PerformanceCalculator{
+			
+		}
+		
+		
+		
 		statement(invoices, plays);
 		
 		function statement(invoices, plays) {
@@ -104,7 +121,7 @@
 			return statmentDate;
 			
 			function enrichPerformance(aPerformance) {
-				const calculator = new PerformanceCalculator(aPerformance, playFor(aPerformance)); // 공연료 계산기 
+				const calculator = new createPerformanceCalculator(aPerformance, playFor(aPerformance)); // 생성자 대신 팩터리 함수 이용
 				const result = Object.assign({}, aPerformance);
 			
 				result.play = calculator.play; // 중간 데이터에 연극 정보를 저장
