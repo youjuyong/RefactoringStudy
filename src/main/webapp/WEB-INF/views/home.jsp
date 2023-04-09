@@ -47,14 +47,13 @@
 		}
 		statement(invoices, plays);
 		
-		function statement(invoices, plays) {
+		function createStatementData(invoices, plays) {
 			const statmentDate         = {};
 			statmentDate.customer    = invoices.customer;
 			statmentDate.perfomances = invoices.perfomances.map(enrichPerformance);
 			statmentDate.totalAmount = totalAmount(statmentDate);
 			statmentDate.totalVolumeCredits = totalVolumeCredits(statmentDate);
-			let result =  renderPlainText(statmentDate ,plays);
-			console.log(result);
+			return statmentDate;
 			
 			function enrichPerformance(aPerformance) {
 				
@@ -96,11 +95,8 @@
 			
 			// 토탈 값 함수
 			function totalVolumeCredits(data) {
-				let result = 0; // 변수 선언(초기화)를 반복문 앞으로 이동
-				for(let perf of data.perfomances){
-					result = perf.volumeCredits;
-				}
-				return result;
+				return data.perfomances
+							.reduce((total, p ) => total + p.volumeCredits, 0);
 			}
 			
 			function volumeCreditsFor(aPerformance) {
@@ -112,20 +108,20 @@
 			}
 			
 			function totalAmount(data) {
-				let result = 0;
-				
-				for(let perf of data.perfomances){
-					result += perf.amount;
-				}
-				return result;
+				return data.perfomances
+				.reduce((total, p) => total + p.amount,0);
 			}
+		}
+		
+		function statement(invoices, plays) {
+			let result =  renderPlainText(createStatementData(invoices, plays));
+			console.log(result);
 		}
 		
 		
 		
 		function renderPlainText(data, plays) {
 			let result = "청구 내역(고객명 : "+data.customer+")";
-			console.log(data);
 			for(let perf of data.perfomances){
 				
 				// 청구 내역을 출력한다.
