@@ -47,7 +47,12 @@
 		}
 		statement(invoices, plays);
 		
-		function createStatementData(invoices, plays) {
+		function statement(invoices, plays) {
+			let result =  renderPlainText(createStatementData(invoices, plays));
+			console.log(result);
+		}
+		
+		function createStatementData(invoices, plays) { // 중간데이터 생성을 전담
 			const statmentDate         = {};
 			statmentDate.customer    = invoices.customer;
 			statmentDate.perfomances = invoices.perfomances.map(enrichPerformance);
@@ -113,13 +118,6 @@
 			}
 		}
 		
-		function statement(invoices, plays) {
-			let result =  renderPlainText(createStatementData(invoices, plays));
-			console.log(result);
-		}
-		
-		
-		
 		function renderPlainText(data, plays) {
 			let result = "청구 내역(고객명 : "+data.customer+")";
 			for(let perf of data.perfomances){
@@ -131,15 +129,30 @@
 			result += "총액 : " + usd(data.totalAmount);
 			result += "적립 포인트 : " + data.totalVolumeCredits + "점\n";
 			return result;
-			
-			function usd(aNumber) { // 포맷 함수생성 
-				return new Intl.NumberFormat("en-US",
-						{style:"currency",currency:"USD"
-						,minimumFrationDigits:2}).format(aNumber/100);
-			}
-			
 		}
 		
+		function htmlStatment(invoices, plays){
+			return renderHtml(createStatmentData(invoices))
+		}
+		
+		function renderHtml(data) {
+			let result = "<h1>청구 내역 ( 고객명 : " + data.customer + "</h1>)\n";
+			result += "<table>\n";
+			result += "<tr><th>연극</th><th>좌석 수</th><th>금액</th></tr>";
+			for(let perf of data.performances){
+				result += "<tr><td>" + perf.play.name + "</td><td>" + perf.audience + "</td>";
+				result += "<td>" + usd(perf.amount) + "</td></tr>\n";
+			}
+			result += "</table>\n";
+			result += "<p>총액 : <em>" + usd(data.totalAmount) + "</em></p>\n"
+			return result;
+		}
+		
+		function usd(aNumber) { // 포맷 함수생성 
+			return new Intl.NumberFormat("en-US",
+					{style:"currency",currency:"USD"
+					,minimumFrationDigits:2}).format(aNumber/100);
+		}
 		
 		
 		
