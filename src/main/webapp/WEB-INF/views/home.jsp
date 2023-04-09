@@ -45,12 +45,22 @@
 					}
 				]
 		}
+		
+		class PerformanceCalculator {
+			constructor(aPerformance, aPlay) {
+				this.performance = aPerformance;
+				this.play = aPlay;
+			}
+		}
+		
 		statement(invoices, plays);
 		
 		function statement(invoices, plays) {
 			let result =  renderPlainText(createStatementData(invoices, plays));
 			console.log(result);
 		}
+		
+	
 		
 		function createStatementData(invoices, plays) { // 중간데이터 생성을 전담
 			const statmentDate         = {};
@@ -61,7 +71,7 @@
 			return statmentDate;
 			
 			function enrichPerformance(aPerformance) {
-				
+				const calculator = new PerformanceCalculator(aPerformance, playFor(aPerformance)); // 공연료 계산기 
 				const result = Object.assign({}, aPerformance);
 			
 				result.play = playFor(result); // 중간 데이터에 연극 정보를 저장
@@ -75,6 +85,7 @@
 				return plays[aPerformance.playID];
 			}
 			
+			// 장르에 따라 적립포인트 값을 계산하는 기능
 			function amountFor(aPerformance){ // 값이 바뀌지 않는 변수는 매개변수로 전달 //perf를 -> aPerformance로 명확한이름변경
 				let result = 0; // 변수를 초기화 하는 코드
 				switch (aPerformance.play.type){ // <- play를 playFor(호출로 변경)	
