@@ -30,13 +30,12 @@ $(document).ready(function(){
 						.filter(line => line.trim() != "")
 					    .map(line => line.split(","))
 					    .filter(record => record[1].trim() === "India");
-			// 다음 filter를 이용하여 인도에 위치한 사무실을 뽑아낸다.
+					    .map(record => ({city: record[0].trim(), phone: record[2].trim()}));
+			// map 을 사용해 결과 레코드 생성
 			for (const line of loopItems) {
 				console.log(line);
 				const record = line;
-				/* if( record[1].trim() === "India" ){ */
-					result.push({city: record[0].trim(), phone: record[2].trim()});
-				/* } */
+				result.push(line);
 			}
 			
 		 	$.each(result, function(index, value) {
