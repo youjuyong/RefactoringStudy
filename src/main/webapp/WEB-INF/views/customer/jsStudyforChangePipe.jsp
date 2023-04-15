@@ -27,11 +27,12 @@ $(document).ready(function(){
 			const result = [];
 			const loopItems = lines
 						.slice(1)
-						.filter(line => line.trim() != "");
-		
+						.filter(line => line.trim() != "")
+					    .map(line => line.split(","));
+			//다음 map() 연산을 통해 여러줄 짜리 scv 데이터를 문자열 배열로 반환한다.
 			for (const line of loopItems) {
 				console.log(line);
-				const record = line.split(",");
+				const record = line;
 				if( record[1].trim() === "India" ){
 					result.push({city: record[0].trim(), phone: record[2].trim()});
 				}
