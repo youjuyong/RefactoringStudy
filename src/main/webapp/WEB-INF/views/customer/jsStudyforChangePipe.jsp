@@ -23,15 +23,15 @@ $(document).ready(function(){
 		
 		function acquireData(input) {
 			const lines = input.split("\n");
-			let firstLine = true;
+			/* let firstLine = true; */
 			const result = [];
-			const loopItems = lines;
+			const loopItems = lines.slice(1);
 			for (const line of loopItems) {
-			
-				if (firstLine) {
+				// 첫줄을 거르는 문장으로 slice로 삭제
+				/* if (firstLine) {
 					firstLine = false;
 					continue;
-				} 
+				}  */
 				if(line.trim() === "") continue;
 				const record = line.split(",");
 				if( record[1].trim() === "India" ){
