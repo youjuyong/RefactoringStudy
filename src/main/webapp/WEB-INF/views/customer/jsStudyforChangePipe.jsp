@@ -23,25 +23,23 @@ $(document).ready(function(){
 		
 		function acquireData(input) {
 			const lines = input.split("\n");
-			/* let firstLine = true; */
+			
 			const result = [];
-			const loopItems = lines.slice(1);
+			const loopItems = lines
+						.slice(1)
+						.filter(line => line.trim() != "");
+		
 			for (const line of loopItems) {
-				// 첫줄을 거르는 문장으로 slice로 삭제
-				/* if (firstLine) {
-					firstLine = false;
-					continue;
-				}  */
-				if(line.trim() === "") continue;
+				console.log(line);
 				const record = line.split(",");
 				if( record[1].trim() === "India" ){
 					result.push({city: record[0].trim(), phone: record[2].trim()});
 				}
 			}
 			
-		/* 	$.each(result, function(index, value) {
+		 	$.each(result, function(index, value) {
 				console.log(result[index]);
-			}); */
+			}); 
 		}
 		
 		acquireData(data);
