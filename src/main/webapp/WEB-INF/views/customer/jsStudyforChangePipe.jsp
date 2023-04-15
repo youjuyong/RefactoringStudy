@@ -28,14 +28,15 @@ $(document).ready(function(){
 			const loopItems = lines
 						.slice(1)
 						.filter(line => line.trim() != "")
-					    .map(line => line.split(","));
-			//다음 map() 연산을 통해 여러줄 짜리 scv 데이터를 문자열 배열로 반환한다.
+					    .map(line => line.split(","))
+					    .filter(record => record[1].trim() === "India");
+			// 다음 filter를 이용하여 인도에 위치한 사무실을 뽑아낸다.
 			for (const line of loopItems) {
 				console.log(line);
 				const record = line;
-				if( record[1].trim() === "India" ){
+				/* if( record[1].trim() === "India" ){ */
 					result.push({city: record[0].trim(), phone: record[2].trim()});
-				}
+				/* } */
 			}
 			
 		 	$.each(result, function(index, value) {
