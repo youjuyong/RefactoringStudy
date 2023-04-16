@@ -23,18 +23,30 @@ $(document).ready(function(){
 			]
 	};
 	
+	class NumberRange {
+		constructor(min, max){
+			this._data = {min:min, max: max}
+		}
+		
+		get min(){return this._data.min;}
+		get max(){return this._data.max;}
+	}
+	
+	
 	let operatingPlan = {
 			temperatureFloor : 50,
 			temperatureCeiling : 55
 	}
+	const range = new NumberRange(operatingPlan.temperatureFloor, operatingPlan.temperatureCeiling);
 	
-	function readingsOutsideRange (station, min, max) {
+	function readingsOutsideRange (station,range) {
 		return station.readings
-				.filter(r => r.temp < min || r.temp > max);
+				.filter(r => r.temp < range.min || r.temp > range.max);
 	}
 	
-	let alerts = readingsOutsideRange(station, operatingPlan.temperatureFloor,
-										   operatingPlan.temperatureCeiling);
+	let alerts = readingsOutsideRange(station,range);
+	
+	
 	
 	
 	$.each(alerts, function(index,value) {
